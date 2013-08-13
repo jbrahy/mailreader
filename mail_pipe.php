@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+ #!/usr/bin/php -q
 <?php
 //  Use -q so that php doesn't print out the HTTP headers
 
@@ -24,7 +24,7 @@
 
 // Set a long timeout in case we're dealing with big files
 set_time_limit(600);
-ini_set('max_execution_time',600);
+ini_set('max_execution_time', 600);
 
 // Anything printed to STDOUT will be sent back to the sender as an error!
 // error_reporting(-1);
@@ -32,26 +32,27 @@ ini_set('max_execution_time',600);
 
 
 // Require the file with the mailReader class in it
-require_once('mailReader.php');
+require_once('mail_reader.php');
 
 // Where should discovered files go
 $save_directory = __DIR__; // stick them in the current directory
 
 // Configure your MySQL database connection here
 // Other PDO connections will probably work too
-$db_host = 'localhost';
-$db_un = 'db_un';
-$db_pass = 'db_pass';
-$db_name = 'db_name';
-$pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8",$db_un,$db_pass);
+$db_hostname = '127.0.0.1';
+$db_username = 'db_username';
+$db_password = 'db_password';
+$db_database = 'db_database';
 
+$pdo = new PDO("mysql:host=$db_hostname;dbname=$db_database;charset=utf8", $db_username, $db_password);
 
 // Who can send files to through this script?
-$allowed_senders = Array('myemail@example.com', 'whatever@example.com');
+$allowed_senders = Array( 'my_email@example.com', 'whatever@example.com' );
 
-$mr = new mailReader($save_directory,$allowed_senders,$pdo);
-$mr->save_msg_to_db = TRUE;
-$mr->send_email = TRUE;
+$mail_reader = new mail_reader($save_directory, $allowed_senders, $pdo);
+
+$mail_reader->save_msg_to_db = TRUE;
+$mail_reader->send_email = TRUE;
 // Example of how to add additional allowed mime types to the list
-// $mr->allowed_mime_types[] = 'text/csv';
-$mr->readEmail();
+// $mail_reader->allowed_mime_types[] = 'text/csv';
+$mail_reader->read_email();
